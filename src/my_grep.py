@@ -11,6 +11,7 @@ class My_grep(object):
 
         self.isRegEx = None
         self.found_pattern = None
+        self.isFind = False
 
         self.set_option()
 
@@ -55,21 +56,21 @@ class My_grep(object):
 
     def find_pattern(self):
         find_list = list()
+        self.isFind = True
 
         if self.isRegEx:
             p = re.compile(self.pattern)
             for i, text in enumerate(self.context):
                 m = p.search('r'+text)
                 if m is not None:
-                    print(f'{m.group()} is matched')
+                    logging.info(f'{m.group()} is matched')
                     find_list.append([[i+1, m.start(), m.end()], text.replace('\n', '')])
-            pass
         else:
             p_len = len(self.pattern)
             for i, text in enumerate(self.context):
                 start_idx = text.find(self.pattern)
                 if start_idx != -1:
-                    print(f'{self.pattern} is matched')
+                    logging.info(f'[Line {i+1}]{self.pattern} is matched')
                     find_list.append([[i+1, start_idx, start_idx+p_len], text.replace('\n', '')])
 
         if len(find_list) < 1:
@@ -79,4 +80,11 @@ class My_grep(object):
         return True
 
     def print_pattern(self):
-        pass
+        if self.found_pattern is not None:
+            for (i, text) in self.found_pattern:
+                print_text = ''.join((text[:i[1]-1], "\033[31m", text[i[1]-1:i[2]-1], "\033[0m", text[i[2]-1: ]))
+                print(f'[Line {i[0]}]: {print_text}')
+        elif self.isFind:
+            print('Not Found Any texts matched with pattern')
+        else:
+            print('Please Run find pattern')
