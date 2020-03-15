@@ -42,6 +42,11 @@ class TestLoadData(unittest.TestCase):
         mg = My_grep(file=join(join(os.getcwd(), join('..', 'data'), 'Invalid.txt')))
         self.assertRaises(FileNotFoundError, mg.load_data)
 
+    def testValidFile(self):
+        mg = My_grep(file=join(join(os.getcwd(), join('..', 'data'), 'Lorem_Ipsum.txt')))
+        mg.load_data()
+        self.assertIsNotNone(mg.context)
+
 
 if __name__ == '__main__':
     unittest.main()
