@@ -4,11 +4,13 @@ import logging
 
 class My_grep(object):
     def __init__(self, option='', pattern='', file=''):
-        self.context = ''
+        self.context = None
         self.option = option # option list
         self.pattern = pattern  # pattern str
         self.file = file  # file name str
+
         self.isRegEx = None
+        self.found_pattern = None
 
         self.set_option()
 
@@ -23,7 +25,7 @@ class My_grep(object):
             logging.info('Open Text File')
             with open(self.file) as f:
                 logging.info('Read Text File')
-                self.context = f.read()
+                self.context = f.read().split('\n')
                 logging.info('Success Read Text File')
 
         except FileNotFoundError as Error:
@@ -52,7 +54,29 @@ class My_grep(object):
         self.isRegEx = True if idx_G > idx_F else False
 
     def find_pattern(self):
-        pass
+        find_list = list()
+
+        if self.isRegEx:
+            p = re.compile(self.pattern)
+            for i, text in enumerate(self.context):
+                m = p.search('r'+text)
+                if m is not None:
+                    print(f'{m.group()} is matched')
+                    find_list.append([[i+1, m.start(), m.end()], text.replace('\n', '')])
+            pass
+        else:
+            p_len = len(self.pattern)
+            for i, text in enumerate(self.context):
+                start_idx = text.find(self.pattern)
+                if start_idx != -1:
+                    print(f'{self.pattern} is matched')
+                    find_list.append([[i+1, start_idx, start_idx+p_len], text.replace('\n', '')])
+
+        if len(find_list) < 1:
+            return False
+
+        self.found_pattern = find_list
+        return True
 
     def print_pattern(self):
-        print(self.find_pattern())
+        pass
