@@ -30,10 +30,31 @@ class TestOptions(unittest.TestCase):
                      file=join(join(os.getcwd(), join('..', 'data'), 'Lorem_Ipsum.txt')))
         self.assertEqual(mg.isRegEx, False)
 
-    def test_option_F(self):
-        pass
+    def test_find_pattern_with_option_F(self):
+        '''
+        Test Option F, Find Pattern as plain text
+        '''
+        mg = My_grep(option='F',
+                     pattern='classical',
+                     file=join(join(os.getcwd(), join('..', 'data'), 'Lorem_Ipsum.txt')))
+        mg.load_data()
+        self.assertTrue(mg.find_pattern())
+        self.assertListEqual([[[6, 27, 36], 'It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.'],
+                              [[7, 208, 217], 'Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.']]
+                             , mg.found_pattern)
 
-    def test_option_G(self):
+    def test_find_pattern_with_option_G(self):
+        '''
+        Test Option F, Find Pattern as plain text
+        '''
+        mg = My_grep(option='G',
+                     pattern='classi*',
+                     file=join(join(os.getcwd(), join('..', 'data'), 'Lorem_Ipsum.txt')))
+        mg.load_data()
+        self.assertTrue(mg.find_pattern())
+        self.assertListEqual([[[6, 27, 33], 'It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.'],
+                              [[7, 208, 214], 'Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.']]
+                             , mg.found_pattern)
         pass
 
 
