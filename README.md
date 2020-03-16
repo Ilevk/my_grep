@@ -7,9 +7,14 @@ python으로 simple grep 기능 구현  (문자열검색)
 ### 1. 실행 방법
 #### 1) Commend Line 사용 시
 
-    python3 src/my_grep.py [-o=OPTION] -p=PATTERN -f=FILE
+    python3 main.py [-o=OPTION] -p=PATTERN -f=FILE
+    
+    예시)
+    python3 main.py -o=E -p=Latin -f=data/Lorem_Ipsum.txt
+    
+    python3 main.py -o=G -p='class*' -f=data/Lorem_Ipsum.txt
 
-- 옵션에서 정규 표현식을 사용할 경우 Pattern은 따옴표로 묶어 'regex*' 등으로 입력
+<img src=img/example_ctl.png />
     
 #### 2) Python 스크립트에서 import 시
 
@@ -19,7 +24,10 @@ python으로 simple grep 기능 구현  (문자열검색)
     file = '.../file.txt'
     mg = My_grep(option, pattern, file) # My_Grep 객체 생성
     mg.load_find()     # 파일 읽기 및 패턴 찾기 
-    mg.found_pattern   # 매칭된 패턴 리스트 반환 [[# of Row, Start idx, End idx], String] 
+    mg.found_pattern   # 매칭된 패턴 리스트 반환 [[[# of Row, 1st Start idx, 1st End idx], 
+                                              [# of Row, 2nd Start idx, 2nd End idx], ...], Text] 
+
+<img src=img/example_script.png />
     
 ### 2. 명령어 옵션
         -F        : PATTERN을 정규 표현식(RegEx)이 아닌 일반 문자열로 해석.
@@ -29,8 +37,11 @@ python으로 simple grep 기능 구현  (문자열검색)
 
 ### 3. grep 과의 비교 (한계 및 이점)
 
-#### (1) 파이썬 정규식 문법의 문제점인 탈출 문자 적용이 되어있지 않음.<br>
-#### (2) 이하 옵션이 구현되어 있지 않음.
+#### 비교 이미지
+<img src=img/compare.png />
+
+
+#### (1) 이하 옵션이 구현되어 있지 않음.
 
         -E        : PATTERN을 확장 정규 표현식(Extended RegEx)으로 해석.
         -P        : PATTERN을 Perl 정규 표현식(Perl RegEx)으로 해석.
@@ -57,8 +68,8 @@ python으로 simple grep 기능 구현  (문자열검색)
         -l        : 패턴이 존재하는 파일 이름만 표시.
         -c        : 파일 당 패턴이 일치하는 라인의 갯수 출력.
 
-#### (3) 다른 파이썬 스크립트에서 import를 통해 패턴에 맞는 문자열 탐색 기능을 사용할 수 있음.
 
+#### (2) 다른 파이썬 스크립트에서 import를 통해 패턴에 맞는 문자열 탐색 기능을 사용할 수 있음.
 
 ### 4. Reference
 1. grep의 구성: https://recipes4dev.tistory.com/157
