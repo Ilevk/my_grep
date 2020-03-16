@@ -10,6 +10,7 @@ class My_grep(object):
         self._file = file
 
         self._isRegEx = None
+        self._isIgnoreCase = False
 
         self._found_pattern = None
         self._isFind = False
@@ -58,6 +59,9 @@ class My_grep(object):
             idx_F = 0
             idx_G = 1
 
+        if 'i' in self._option:
+            self._isIgnoreCase = True
+
         self._isRegEx = True if idx_G > idx_F else False
 
     def find_pattern(self):
@@ -71,7 +75,13 @@ class My_grep(object):
 
         if self.isRegEx:
             logging.info('Using pattern as Regular Expression')
-            p = re.compile(self._pattern)
+
+            if self._isIgnoreCase:
+                logging.info('Ignoring Case')
+                p = re.compile(self._pattern, re.I)
+            else:
+                p = re.compile(self._pattern)
+
             for i, text in enumerate(self._context):
                 m = p.search('r' + text)
                 if m is not None:
@@ -80,11 +90,19 @@ class My_grep(object):
         else:
             logging.info('Using pattern as Plain Text')
             p_len = len(self._pattern)
-            for i, text in enumerate(self._context):
-                start_idx = text.find(self._pattern)
+
+            if self._isIgnoreCase:
+                tmp_context = [c.upper() for c in self._context]
+                tmp_pattern = self._pattern.upper()
+            else:
+                tmp_context = self._context
+                tmp_pattern = self._pattern
+
+            for i, (tmp_text, original_text) in enumerate(zip(tmp_context, self._context)):
+                start_idx = tmp_text.find(tmp_pattern)
                 if start_idx != -1:
                     logging.info(f'[Line {i + 1}]{self._pattern} is matched')
-                    find_list.append([[i + 1, start_idx, start_idx + p_len], text.replace('\n', '')])
+                    find_list.append([[i + 1, start_idx, start_idx + p_len], original_text.replace('\n', '')])
 
         if len(find_list) < 1:
             logging.info('No matched text is here.')
