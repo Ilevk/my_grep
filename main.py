@@ -1,5 +1,4 @@
 import argparse
-import logging
 from src.my_grep import *
 
 
@@ -16,8 +15,7 @@ def main():
     logging.info(f'args: {args.option, args.pattern, args.file}')
 
     mg = My_grep(args.option, args.pattern, args.file)
-    mg.load_data()
-    mg.find_pattern()
+    mg.load_find()
     mg.print_pattern()
 
 if __name__ == '__main__':

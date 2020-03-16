@@ -16,6 +16,10 @@ class My_grep(object):
 
         self.set_option()
 
+    def load_find(self):
+        self.load_data()
+        self.find_pattern()
+
     def load_data(self):
         """
         Load Text file and Read Text data,
