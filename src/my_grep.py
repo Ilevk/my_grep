@@ -41,19 +41,20 @@ class My_grep(object):
         G: Handle pattern as Basic RegEx
 
         Behind option has a priority
+        if self._option is empty, Handle pattern as Plain Text
         """
         # set option F, G
         if 'F' in self._option and 'G' in self._option:
             idx_F = self._option.index('F')
             idx_G = self._option.index('G')
-        elif 'F' in self._option:
+        elif self._option == '' or 'F' in self._option:
             idx_F = 1
             idx_G = 0
         else:
             idx_F = 0
             idx_G = 1
 
-        self.isRegEx = True if idx_G > idx_F else False
+        self._isRegEx = True if idx_G > idx_F else False
 
     def find_pattern(self):
         """
@@ -71,10 +72,10 @@ class My_grep(object):
                 m = p.search('r' + text)
                 if m is not None:
                     logging.info(f'{m.group()} is matched')
-                    find_list.append([[i + 1, m.start(), m.end()], text.replace('\n', '')])
+                    find_list.append([[i + 1, m.start() - 1, m.end() - 1], text.replace('\n', '')])
         else:
             logging.info('Using pattern as Plain Text')
-            p_len = len(self.p_attern)
+            p_len = len(self._pattern)
             for i, text in enumerate(self._context):
                 start_idx = text.find(self._pattern)
                 if start_idx != -1:
@@ -95,7 +96,7 @@ class My_grep(object):
         """
         if self._found_pattern is not None:
             for (i, text) in self._found_pattern:
-                print_text = ''.join((text[:i[1] - 1], "\033[31m", text[i[1] - 1:i[2] - 1], "\033[0m", text[i[2] - 1:]))
+                print_text = ''.join((text[:i[1]], "\033[31m", text[i[1]:i[2]], "\033[0m", text[i[2]:]))
                 print(f'[Line {i[0]}]: {print_text}')
         elif self._isFind:
             logging.info('Not Found Any texts matched with pattern')
@@ -150,7 +151,7 @@ class My_grep(object):
     @property
     def found_pattern(self):
         if self._found_pattern is not None:
-            return self.found_pattern
+            return self._found_pattern
         else:
             logging.info('Please Run find pattern')
             return None

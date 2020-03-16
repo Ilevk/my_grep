@@ -41,11 +41,11 @@ class TestOptions(unittest.TestCase):
         self.assertTrue(mg.find_pattern())
         self.assertListEqual([[[6, 27, 36], 'It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.'],
                               [[7, 208, 217], 'Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.']]
-                             , mg.found_pattern)
+                             , mg._found_pattern)
 
     def test_find_pattern_with_option_G(self):
         '''
-        Test Option F, Find Pattern as plain text
+        Test Option G, Find Pattern as Regular Expression
         '''
         mg = My_grep(option='G',
                      pattern='classi*',
@@ -54,8 +54,7 @@ class TestOptions(unittest.TestCase):
         self.assertTrue(mg.find_pattern())
         self.assertListEqual([[[6, 27, 33], 'It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.'],
                               [[7, 208, 214], 'Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.']]
-                             , mg.found_pattern)
-        pass
+                             , mg._found_pattern)
 
 
 class TestLoadData(unittest.TestCase):
