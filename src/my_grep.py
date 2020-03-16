@@ -70,44 +70,40 @@ class My_grep(object):
 
         :return: Boolean, whether find or not find
         """
+
+        def find_pattern_next(sub_i, sub_p, sub_text, matched_list, offset) :
+            """
+            Find pattern with subtext recursively
+            """
+            m = sub_p.search(sub_text)
+            if m is not None:
+                matched_list.append([sub_i + 1, offset + m.start(), offset + m.end()])
+
+                if len(sub_text[m.end() - 1:]) > len(self._pattern):
+                    find_pattern_next(sub_i, sub_p, sub_text[m.end() - 1:], matched_list, offset + m.end() - 1)
+
         find_list = list()
         self._isFind = True
 
         if self.isRegEx:
             logging.info('Using Pattern as Regular Expression')
             print('Using Pattern as Regular Expression')
-
-            if self._isIgnoreCase:
-                logging.info('Ignoring Case')
-                print('Ignoring Case')
-                p = re.compile(self._pattern, re.I)
-            else:
-                p = re.compile(self._pattern)
-
-            for i, text in enumerate(self._context):
-                m = p.search('r' + text)
-                if m is not None:
-                    logging.info(f'{m.group()} is matched')
-                    find_list.append([[i + 1, m.start() - 1, m.end() - 1], text.replace('\n', '')])
+            tmp_pattern = fr"{self._pattern}"
         else:
-            logging.info('Using Pattern as Plain Text')
-            print('Using Pattern as Plain Text')
-            p_len = len(self._pattern)
+            tmp_pattern = re.escape(fr"{self._pattern}")
 
-            if self._isIgnoreCase:
-                logging.info('Ignoring Case')
-                print('Ignoring Case')
-                tmp_context = [c.upper() for c in self._context]
-                tmp_pattern = self._pattern.upper()
-            else:
-                tmp_context = self._context
-                tmp_pattern = self._pattern
+        if self._isIgnoreCase:
+            logging.info('Ignoring Case')
+            print('Ignoring Case')
+            p = re.compile(tmp_pattern, re.I)
+        else:
+            p = re.compile(tmp_pattern)
 
-            for i, (tmp_text, original_text) in enumerate(zip(tmp_context, self._context)):
-                start_idx = tmp_text.find(tmp_pattern)
-                if start_idx != -1:
-                    logging.info(f'[Line {i + 1}]{self._pattern} is matched')
-                    find_list.append([[i + 1, start_idx, start_idx + p_len], original_text.replace('\n', '')])
+        for i, text in enumerate(self._context):
+            tmp_list = list()
+            find_pattern_next(i, p, text, tmp_list, 0)
+            if len(tmp_list) > 0 :
+                find_list.append([tmp_list, text.replace('\n', '')])
 
         if len(find_list) < 1:
             logging.warning('No matched Text is here.')
@@ -122,9 +118,14 @@ class My_grep(object):
         Print pattern
         """
         if self._found_pattern is not None:
-            for (i, text) in self._found_pattern:
-                print_text = ''.join((text[:i[1]], "\033[31m", text[i[1]:i[2]], "\033[0m", text[i[2]:]))
-                print(f'[Line {i[0]}]: {print_text}')
+            for (idxes, text) in self._found_pattern:
+                result = ''
+                prev_idx = 0
+                for idx in idxes :
+                    result += ''.join((text[prev_idx:idx[1]], "\033[31m", text[idx[1]:idx[2]], "\033[0m"))
+                    prev_idx = idx[2]
+                result += text[prev_idx:]
+                print(f'[Line {idx[0]}]: {result}')
         elif self._isFind:
             logging.warning('Not Found any texts matched with pattern')
         else:
