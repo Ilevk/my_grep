@@ -7,24 +7,36 @@ from src.my_grep import *
 
 class TestOptions(unittest.TestCase):
     def test_set_option_FG(self):
+        """
+        Test Setting Option FG Priority
+        """
         mg = My_grep(option='FG',
                      pattern='test_pattern',
                      file=join(join(os.getcwd(), join('..', 'data'), 'Lorem_Ipsum.txt')))
         self.assertEqual(mg.isRegEx, True)
 
     def test_set_option_GF(self):
+        """
+        Test Setting Option GF Priority
+        """
         mg = My_grep(option='GF',
                      pattern='test_pattern',
                      file=join(join(os.getcwd(), join('..', 'data'), 'Lorem_Ipsum.txt')))
         self.assertEqual(mg.isRegEx, False)
 
     def test_set_option_G(self):
+        """
+        Test Setting Option F
+        """
         mg = My_grep(option='G',
                      pattern='test_pattern',
                      file=join(join(os.getcwd(), join('..', 'data'), 'Lorem_Ipsum.txt')))
         self.assertEqual(mg.isRegEx, True)
 
     def test_set_option_F(self):
+        """
+        Test Setting Option F
+        """
         mg = My_grep(option='F',
                      pattern='test_pattern',
                      file=join(join(os.getcwd(), join('..', 'data'), 'Lorem_Ipsum.txt')))
@@ -87,10 +99,16 @@ class TestOptions(unittest.TestCase):
 
 class TestLoadData(unittest.TestCase):
     def testInvalidFile(self):
+        """
+        Test Invalid File path
+        """
         mg = My_grep(file=join(join(os.getcwd(), join('..', 'data'), 'Invalid.txt')))
         self.assertRaises(FileNotFoundError, mg.load_data)
 
     def testValidFile(self):
+        """
+        Test Valid File path
+        """
         mg = My_grep(file=join(join(os.getcwd(), join('..', 'data'), 'Lorem_Ipsum.txt')))
         mg.load_data()
         self.assertIsNotNone(mg.context)

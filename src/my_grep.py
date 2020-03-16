@@ -36,7 +36,7 @@ class My_grep(object):
                 logging.info('Success Read Text File')
 
         except FileNotFoundError as Error:
-            logging.info(f'Raise {Error}')
+            logging.warning(f'Raise {Error}')
             raise FileNotFoundError
 
     def set_option(self):
@@ -74,10 +74,12 @@ class My_grep(object):
         self._isFind = True
 
         if self.isRegEx:
-            logging.info('Using pattern as Regular Expression')
+            logging.info('Using Pattern as Regular Expression')
+            print('Using Pattern as Regular Expression')
 
             if self._isIgnoreCase:
                 logging.info('Ignoring Case')
+                print('Ignoring Case')
                 p = re.compile(self._pattern, re.I)
             else:
                 p = re.compile(self._pattern)
@@ -88,10 +90,13 @@ class My_grep(object):
                     logging.info(f'{m.group()} is matched')
                     find_list.append([[i + 1, m.start() - 1, m.end() - 1], text.replace('\n', '')])
         else:
-            logging.info('Using pattern as Plain Text')
+            logging.info('Using Pattern as Plain Text')
+            print('Using Pattern as Plain Text')
             p_len = len(self._pattern)
 
             if self._isIgnoreCase:
+                logging.info('Ignoring Case')
+                print('Ignoring Case')
                 tmp_context = [c.upper() for c in self._context]
                 tmp_pattern = self._pattern.upper()
             else:
@@ -105,7 +110,7 @@ class My_grep(object):
                     find_list.append([[i + 1, start_idx, start_idx + p_len], original_text.replace('\n', '')])
 
         if len(find_list) < 1:
-            logging.info('No matched text is here.')
+            logging.warning('No matched Text is here.')
             return False
 
         self._found_pattern = find_list
@@ -121,9 +126,9 @@ class My_grep(object):
                 print_text = ''.join((text[:i[1]], "\033[31m", text[i[1]:i[2]], "\033[0m", text[i[2]:]))
                 print(f'[Line {i[0]}]: {print_text}')
         elif self._isFind:
-            logging.info('Not Found Any texts matched with pattern')
+            logging.warning('Not Found any texts matched with pattern')
         else:
-            logging.info('Please Run find pattern')
+            logging.warning('Please Run find pattern')
 
     def reset(self, option=None, pattern=None, file=None):
         """
@@ -133,17 +138,18 @@ class My_grep(object):
         :param file:    str
         """
         logging.info('Reset My grep')
+        print('Reset My grep')
 
         if option is not None:
             self._option = option
             self.set_option()
             self._isRegEx = None
         if pattern is not None:
-            logging.info(f'Set new Pattern: {pattern}')
+            logging.warning(f'Set new Pattern: {pattern}')
             self._pattern = pattern
-            logging.info('Initialize variables related to patterns')
+            logging.warning('Initialize variables related to patterns')
         if file is not None:
-            logging.info(f'Set new file: {pattern}')
+            logging.warning(f'Set new file: {pattern}')
             self._file = file
             self.load_data()
 
@@ -175,5 +181,5 @@ class My_grep(object):
         if self._found_pattern is not None:
             return self._found_pattern
         else:
-            logging.info('Please Run find pattern')
+            logging.warning('Please Run find pattern')
             return None
